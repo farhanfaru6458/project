@@ -17,45 +17,7 @@ export default function Home() {
   return (
     <div className="text-secondary">
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
-        <Link className="navbar-brand fw-bold text-primary" href="#">
-          SkillLink
-        </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav mx-auto">
-            <li className="nav-item mx-2">
-              <Link className="nav-link" href="#">
-                Features
-              </Link>
-            </li>
-            <li className="nav-item mx-2">
-              <Link className="nav-link" href="#">
-                Categories
-              </Link>
-            </li>
-            <li className="nav-item mx-2">
-              <Link className="nav-link" href="#">
-                Top Labours
-              </Link>
-            </li>
-            <li className="nav-item mx-2">
-              <Link className="nav-link" href="#">
-                Testimonials
-              </Link>
-            </li>
-          </ul>
-          <button className="btn btn-primary px-4">Sign In</button>
-        </div>
-      </nav>
+      
 
       {/* Hero Section */}
       <section className="text-center py-5 bg-light">
@@ -68,9 +30,12 @@ export default function Home() {
           </p>
           <div>
             <button className="btn btn-primary btn-lg mx-2">Find Labour</button>
-            <button className="btn btn-warning btn-lg mx-2">
-              Register as Labour
-            </button>
+            <Link to="/register-labour">
+  <button className="btn btn-warning btn-lg mx-2">
+    Register as Labour
+  </button>
+</Link>
+
           </div>
         </div>
       </section>
