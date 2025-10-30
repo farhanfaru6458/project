@@ -1,85 +1,148 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import Logo from "./Logo";
+import "../css/Navbar.css";
 
 export default function Navbar() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
   const navigate = useNavigate();
 
-  // ✅ Load user info from localStorage
+  // ✅ Listen for login/logout updates
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-    }
+    const handleStorageChange = () => {
+      const updatedUser = localStorage.getItem("user");
+      setUser(updatedUser ? JSON.parse(updatedUser) : null);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // ✅ Logout functionality
+  // ✅ Refresh user info when navigating
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    setUser(storedUser ? JSON.parse(storedUser) : null);
+  }, [navigate]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    navigate("/login");
+    navigate("/");
   };
 
+  const userRole = user?.role?.toLowerCase();
+
   return (
-    <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 sticky-top animate__animated animate__fadeInDown">
-        <Link className="navbar-brand fw-bold text-primary" to="/">
-          SkillLink
-        </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 sticky-top animate__animated animate__fadeInDown">
+      {/* Logo + Brand */}
+      <NavLink
+        className="navbar-brand fw-bold text-primary d-flex align-items-center"
+        to="/"
+      >
+        <Logo size={50} />
+        <span className="ms-2" style={{ color: "darkblue" }}>
+          Skill
+        </span>
+        <span>Link</span>
+      </NavLink>
 
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav mx-auto">
-            <li className="nav-item mx-2">
-              <Link className="nav-link" to="/labours">
-                Top Labours
-              </Link>
-            </li>
-            <li className="nav-item mx-2">
-              <Link className="nav-link" to="#categories">
-                Categories
-              </Link>
-            </li>
-            <li className="nav-item mx-2">
-              <Link className="nav-link" to="#top-labours">
-                About Us
-              </Link>
-            </li>
-            <li className="nav-item mx-2">
-              <Link className="nav-link" to="/contact">
-                Contact
-              </Link>
-            </li>
-          </ul>
+      {/* Navbar toggler for mobile */}
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
 
-          {/* ✅ Dynamic right side of navbar */}
-          {user ? (
-            <div className="d-flex align-items-center">
-              <span className="me-3 text-secondary fw-semibold">
-                {user.role.charAt(0).toUpperCase() + user.role.slice(1)}{" "}
-                ({user.username})
+      {/* Center nav links */}
+      <div className="collapse navbar-collapse" id="navbarNav">
+        <ul className="navbar-nav mx-auto">
+
+          {/* ✅ Conditional Home/Dashboard */}
+          <li className="nav-item mx-2">
+            {user ? (
+              userRole === "admin" ? (
+                <NavLink className="nav-link" to="/admin-dashboard">
+                  Admin Dashboard
+                </NavLink>
+              ) : userRole === "manager" ? (
+                <NavLink className="nav-link" to="/manager-dashboard">
+                  Manager Dashboard
+                </NavLink>
+              ) : (
+                <NavLink className="nav-link" to="/" end>
+                  Home
+                </NavLink>
+              )
+            ) : (
+              <NavLink className="nav-link" to="/" end>
+                Home
+              </NavLink>
+            )}
+          </li>
+
+          <li className="nav-item mx-2">
+            <NavLink className="nav-link" to="/labours">
+               Labours
+            </NavLink>
+          </li>
+
+          <li className="nav-item mx-2">
+            <NavLink className="nav-link" to="/about">
+              About Us
+            </NavLink>
+          </li>
+
+          <li className="nav-item mx-2">
+            <NavLink className="nav-link" to="/contact">
+              Contact Us
+            </NavLink>
+          </li>
+        </ul>
+
+        {/* Right side: user info or login */}
+        {user ? (
+          <div
+            className="d-flex align-items-center bg-light border rounded-pill px-3 py-1 shadow-sm"
+            style={{ cursor: "default", minWidth: "fit-content" }}
+          >
+            {/* User Icon */}
+            <FaUserCircle size={28} className="text-primary me-2" />
+
+            {/* Name & Role */}
+            <div className="d-flex flex-column lh-sm me-3">
+              <span className="fw-semibold text-dark">
+                {user.username || user.fullName || "User"}
               </span>
-              <button
-                onClick={handleLogout}
-                className="btn btn-outline-danger btn-sm"
-              >
-                Logout
-              </button>
+              <small className="text-muted">
+                {user.role
+                  ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+                  : "Member"}
+              </small>
             </div>
-          ) : (
-            <Link to="/login" className="btn btn-primary px-4">
-              Sign In
-            </Link>
-          )}
-        </div>
-      </nav>
-    </>
+
+            {/* Logout button */}
+            <button
+              onClick={handleLogout}
+              className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+            >
+              <FaSignOutAlt size={14} />
+              Logout
+            </button>
+          </div>
+        ) : (
+          <Link to="/login" className="btn btn-primary px-4">
+            Sign In
+          </Link>
+        )}
+      </div>
+    </nav>
   );
 }

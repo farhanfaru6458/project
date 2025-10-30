@@ -1,0 +1,42 @@
+.skilllink-logo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Quadrant layout */
+.quadrant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* Quadrant colors */
+.top-left {
+  background-color: #002e5d;
+}
+.top-right {
+  background-color: #00a7ff;
+}
+.bottom-left {
+  background-color: #00b4f0;
+}
+.bottom-right {
+  background-color: #00335f;
+}
+
+/* Smaller icons for better fit */
+.logo-icon {
+  color: #ffffff;
+  font-size: 1.2rem; /* smaller than before */
+  transition: transform 0.3s ease;
+}
+
+/* Optional hover scale */
+.skilllink-logo:hover .logo-icon {
+  transform: scale(1.1);
+}

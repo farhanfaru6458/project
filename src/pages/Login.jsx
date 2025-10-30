@@ -9,41 +9,56 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  
-const handleSubmit = (e) => {
-  e.preventDefault();
 
-  if (!username || !password) {
-    setError("Please enter both username and password.");
-    return;
-  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const registeredUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-  const adminUser = { role: "admin", username: "admin123", password: "admin@123" };
+    if (!username || !password) {
+      setError("Please enter both username and password.");
+      return;
+    }
 
-  const allUsers = [...registeredUsers, adminUser];
+    // 🧩 Predefined hardcoded users
+    const predefinedUsers = [
+      { role: "admin", username: "farhan", password: "farhan123" },
+      { role: "manager", username: "nabeel", password: "nabeel123" },
+      { role: "labour", username: "shaima", password: "shaima123" },
+    ];
 
-  const validUser = allUsers.find(
-    (user) =>
-      user.role.toLowerCase() === role.toLowerCase() &&
-      user.username === username &&
-      user.password === password
-  );
+    // 🧩 Load registered users (if any) from localStorage
+    const registeredUsers =
+      JSON.parse(localStorage.getItem("registeredUsers")) || [];
 
-  if (!validUser) {
-    setError("Invalid credentials or user not registered.");
-    return;
-  }
+    // 🧩 Combine both
+    const allUsers = [...registeredUsers, ...predefinedUsers];
 
-  localStorage.setItem("user", JSON.stringify(validUser));
-  alert(`✅ Welcome ${validUser.role} ${validUser.username}!`);
+    // 🧩 Validate user credentials
+    const validUser = allUsers.find(
+      (user) =>
+        user.role.toLowerCase() === role.toLowerCase() &&
+        user.username === username &&
+        user.password === password
+    );
 
-  if (validUser.role === "admin") navigate("/admin-dashboard");
-  else if (validUser.role === "manager") navigate("/manager-dashboard");
-  else navigate("/");
-};
+    if (!validUser) {
+      setError("Invalid credentials or user not registered.");
+      return;
+    }
 
+    // ✅ Save user info in localStorage
+    localStorage.setItem("user", JSON.stringify(validUser));
 
+    // ✅ Notify other components (like Navbar) to update immediately
+    window.dispatchEvent(new Event("storage"));
+
+    alert(`✅ Welcome ${validUser.role} ${validUser.username}!`);
+
+    // 🧭 Role-based navigation
+    if (validUser.role === "admin") navigate("/admin-dashboard");
+    else if (validUser.role === "manager") navigate("/manager-dashboard");
+    else if (validUser.role === "labour") navigate("/");
+    else navigate("/");
+  };
 
   const handleForgotPassword = () => {
     navigate("/");
@@ -56,7 +71,9 @@ const handleSubmit = (e) => {
     >
       <Card className="shadow-lg border-0 p-4" style={{ width: "420px" }}>
         <div className="text-center mb-4">
-          <h3 className="fw-bold text-primary mb-1">SkillLink</h3>
+          <h3 className="fw-bold text-primary mb-1">
+            <span style={{ color: "darkblue" }}>Skill</span>Link
+          </h3>
           <p className="text-muted mb-0">Sign in to continue</p>
         </div>
 

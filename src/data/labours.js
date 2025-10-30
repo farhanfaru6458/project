@@ -52,13 +52,13 @@ export const Labours = [
   },
   { 
     id: 2, 
-    name: "Neha Das", 
+    name: "Shaima", 
     skill: "Tailor", 
     experience: "6 years", 
-    city: "Kozhikode", 
+    city: "Kasargod", 
     rating: 4.8, 
     reviews: 102, 
-    email: "nehadas.tailor@gmail.com",
+    email: "shaima.tailor@gmail.com",
     phone: "+91 98470 11456",
     about: "Creative tailor with expertise in both traditional and modern garment stitching.",
     image: "https://randomuser.me/api/portraits/women/21.jpg"
@@ -465,7 +465,21 @@ export const Labours = [
   email: "snehaeventco@gmail.com",
   about: "Coordinates and manages complete event flow ensuring smooth execution and client satisfaction.",
   image: "https://randomuser.me/api/portraits/women/62.jpg"
+},
+{
+  id: 34,
+  name: "Aysha Zuniyya",
+  skill: "Event Manager",
+  experience: "5 years",
+  city: "Kannur",
+  rating: 4.8,
+  reviews: 140,
+  phone: "+91 9745612388",
+  email: "snehaeventco@gmail.com",
+  about: "Coordinates and manages complete event flow ensuring smooth execution and client satisfaction.",
+  image: "https://randomuser.me/api/portraits/women/62.jpg"
 }
+
 
 ];
 

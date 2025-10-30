@@ -1,236 +1,277 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Link } from "react-router-dom";
 import {
   FaBolt,
   FaTools,
+  FaHammer,
   FaBrush,
   FaBroom,
-  FaHammer,
+  FaCar,
+  FaCut,
+  FaLeaf,
+  FaCalendarCheck,
+  FaUtensils,
+  FaMusic,
+  FaPalette,
+  FaCamera,
+  FaStar,
+  FaLightbulb,
+  FaMicrophone,
+  FaVideo,
+  FaBirthdayCake,
+  FaHeadphones,
+  FaUserTie,
+  FaWater,
   FaUserShield,
   FaClock,
   FaHandshake,
 } from "react-icons/fa";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import "animate.css";
+import "../css/Home.css";
+import { useNavigate } from "react-router-dom";
+
 
 
 export default function Home() {
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+const navigate = useNavigate();
+  const categories = [
+    { icon: <FaBolt />, title: "Electrician", desc: "Expert in electrical setup and maintenance." },
+    { icon: <FaTools />, title: "Plumber", desc: "Professional plumbing and pipework service." },
+    { icon: <FaHammer />, title: "Carpenter", desc: "Custom furniture and woodwork services." },
+    { icon: <FaBrush />, title: "Painter", desc: "High-quality painting and wall design." },
+    { icon: <FaHammer />, title: "Mason", desc: "Expert masonry and construction work." },
+    { icon: <FaBroom />, title: "Cleaner", desc: "Reliable cleaning and sanitation service." },
+    { icon: <FaCar />, title: "Driver", desc: "Professional drivers for all occasions." },
+    { icon: <FaCut />, title: "Tailor", desc: "Custom stitching and clothing alteration." },
+    { icon: <FaLeaf />, title: "Gardener", desc: "Expert gardening and landscaping service." },
+    { icon: <FaCalendarCheck />, title: "Event Manager", desc: "Organize and execute perfect events." },
+    { icon: <FaUtensils />, title: "Caterer", desc: "Delicious catering for all types of events." },
+    { icon: <FaMusic />, title: "DJ & Sound Technician", desc: "Make every event sound perfect." },
+    { icon: <FaPalette />, title: "Decorator", desc: "Beautiful event and stage decorations." },
+    { icon: <FaCamera />, title: "Photographer", desc: "Capture special moments with style." },
+    { icon: <FaStar />, title: "Makeup Artist", desc: "Professional makeup and beauty service." },
+    { icon: <FaLightbulb />, title: "Light & Stage Technician", desc: "Event lighting and stage setup expert." },
+    { icon: <FaMicrophone />, title: "Event Host (MC)", desc: "Engaging hosts for your events." },
+    { icon: <FaVideo />, title: "Videographer", desc: "High-quality video coverage for all events." },
+    { icon: <FaBirthdayCake />, title: "Cake Designer", desc: "Creative and delicious cake designs." },
+    { icon: <FaHeadphones />, title: "Sound Engineer", desc: "Perfect audio mixing and sound setup." },
+    { icon: <FaUserTie />, title: "Event Coordinator", desc: "Professional event planning and execution." },
+    { icon: <FaWater />, title: "Water Supplier", desc: "Reliable water supply service for all events." },
+    { icon: <FaLightbulb />, title: "Light & Stage Technician", desc: "Event lighting and stage setup expert." },
+    { icon: <FaMicrophone />, title: "Event Host (MC)", desc: "Engaging hosts for your events." },
+  ];
+
+  const chunkSize = 6;
+  const categoryChunks = [];
+  for (let i = 0; i < categories.length; i += chunkSize) {
+    categoryChunks.push(categories.slice(i, i + chunkSize));
+  }
+ const [user, setUser] = useState(null);
+   useEffect(() => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser) {
+        setUser(storedUser);
+      }
+    }, []);
   return (
     <div className="text-secondary">
+
       {/* Navbar */}
       
 
-      {/* Hero Section */}
-      <section className="text-center py-5 bg-light">
-        <div className="container py-5">
-          <h1 className="fw-bold text-dark mb-3">
-            Connecting Local Talent with <br /> Local Opportunities
-          </h1>
-          <p className="text-muted mb-4">
-            Find skilled labours and book them instantly in your area
-          </p>
-          <div>
-            <button className="btn btn-primary btn-lg mx-2">Find Labour</button>
-            <Link to="/register-labour">
-  <button className="btn btn-warning btn-lg mx-2">
-    Register as Labour
-  </button>
-</Link>
+    {/* Hero Section */}
+<section className="hero-section text-center py-5 text-white position-relative overflow-hidden">
+  {/* Floating Icons Layer */}
+  <div className="floating-icons">
+    <FaBolt className="float-icon text-warning" style={{ top: "10%", left: "5%" }} />
+    <FaTools className="float-icon text-info" style={{ top: "25%", left: "85%" }} />
+    <FaBrush className="float-icon text-danger" style={{ top: "70%", left: "10%" }} />
+    <FaBroom className="float-icon text-light" style={{ top: "60%", left: "80%" }} />
+    <FaCar className="float-icon text-primary" style={{ top: "15%", left: "45%" }} />
+    <FaHammer className="float-icon text-success" style={{ top: "80%", left: "50%" }} />
+    <FaLeaf className="float-icon text-success" style={{ top: "40%", left: "15%" }} />
+    <FaBrush className="float-icon text-warning" style={{ top: "50%", left: "70%" }} />
+    <FaLightbulb className="float-icon text-warning" style={{ top: "20%", left: "30%" }} />
+    <FaMusic className="float-icon text-info" style={{ top: "85%", left: "20%" }} />
+  </div>
 
-          </div>
-        </div>
-      </section>
 
+  {/* Hero Content */}
+  <div className="container py-5 position-relative z-3">
+    <h1
+      className="fw-bold mb-3 animate__animated animate__fadeInUp"
+      data-aos="fade-up"
+    >
+      Connecting Local Talent with <br /> Local Opportunities
+    </h1>
+    <p
+      className="text-white-50 mb-4 animate__animated animate__fadeInUp"
+      data-aos="fade-up"
+      data-aos-delay="200"
+    >
+      Find skilled labours and book them instantly in your area
+    </p>
+  <div data-aos="zoom-in" data-aos-delay="400">
+       {user ? (
+      <Link to="/labours" className="btn btn-warning btn-lg mx-2">
+        Find Labour
+      </Link>):(<>
+         <Link to="/labours" className="btn btn-warning btn-lg mx-2">
+        Find Labour
+      </Link>
+        <Link to="/register-labour" className="btn btn-outline-light btn-lg mx-2">
+        Register as Labour
+      </Link> </>)}
+    </div>
+   
+      
+    
+  </div>
+</section>
       {/* Why Choose Section */}
-      <section className="py-5 bg-white text-center">
+      <section id="features" className="py-5 bg-white text-center">
         <div className="container">
-          <h2 className="fw-bold mb-5">Why Choose SkillLink?</h2>
+          <h2 className="fw-bold mb-5" data-aos="fade-up">
+            Why Choose SkillLink?
+          </h2>
           <div className="row g-4">
             <FeatureCard
               icon={<FaUserShield />}
               title="Verified Professionals"
-              text="All our labours are thoroughly verified and background checked for your peace of mind and safety."
+              text="All labours are verified and background checked for your safety."
+              aos="fade-right"
             />
             <FeatureCard
               icon={<FaClock />}
               title="Quick Booking"
-              text="Book skilled professionals in minutes. Our instant booking system connects you faster than ever."
+              text="Book skilled professionals in minutes using our instant system."
+              aos="zoom-in"
             />
             <FeatureCard
               icon={<FaHandshake />}
               title="Trusted Network"
-              text="Join thousands of satisfied customers who trust SkillLink for their daily labour needs."
+              text="Join thousands of verified workers and managers on SkillLink."
+              aos="fade-left"
             />
           </div>
         </div>
       </section>
 
-      {/* Labour Categories */}
-      <section className="py-5 bg-light text-center">
-        <div className="container">
-          <h2 className="fw-bold mb-4">Our Labour Categories</h2>
-          <div className="row g-4">
-            <CategoryCard
-              icon={<FaBolt />}
-              title="Electrician"
-              desc="Professional electrical installation and repair services."
-            />
-            <CategoryCard
-              icon={<FaTools />}
-              title="Plumber"
-              desc="Expert plumbing solutions for residential and commercial."
-            />
-            <CategoryCard
-              icon={<FaHammer />}
-              title="Carpenter"
-              desc="Skilled carpentry and woodwork for all your needs."
-            />
-            <CategoryCard
-              icon={<FaBrush />}
-              title="Painter"
-              desc="Professional painting services with quality finishes."
-            />
-            <CategoryCard
-              icon={<FaBroom />}
-              title="Cleaner"
-              desc="Thorough and reliable cleaning services."
-            />
-            <CategoryCard
-              icon={<FaHammer />}
-              title="Mason"
-              desc="Expert masonry and construction work."
-            />
+      {/* Labour Categories Carousel */}
+      <section id="categories" className="py-5 bg-light text-center">
+        <div className="p-5 ">
+          <h2 className="fw-bold mb-4" data-aos="fade-up">
+            Our Labour Categories
+          </h2>
+
+          <div
+            id="categoryCarousel"
+            className="carousel slide carousel-fade"
+            data-bs-ride="carousel"
+            data-bs-interval="3500"
+          >
+            <div className="carousel-inner bg-white">
+              {categoryChunks.map((chunk, i) => (
+                <div key={i} className={`carousel-item ${i === 0 ? "active" : ""}`}>
+                  <div className="row g-4 justify-content-center">
+                    {chunk.map((c, j) => (
+                      <div
+                        key={j}
+                        className="col-12 col-sm-6 col-md-4 col-lg-2"
+                        data-aos="zoom-in"
+                        data-aos-delay={j * 100}
+                      >
+<div
+  className="card border-0 shadow-lg p-4 h-100 category-card animate__animated animate__fadeInUp"
+  style={{ cursor: "pointer", transition: "0.3s" }}
+  onClick={() => navigate("/labours", { state: { skill: c.title } })}
+>
+  <div className="display-5 text-primary mb-3">{c.icon}</div>
+  <h5 className="fw-semibold">{c.title}</h5>
+  <p className="text-muted small">{c.desc}</p>
+</div>
+
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Carousel Controls */}
+            <button
+              className="carousel-control-prev"
+              type="button"
+              data-bs-target="#categoryCarousel"
+              data-bs-slide="prev"
+            >
+              <span className="carousel-control-prev-icon bg-dark rounded-circle p-3 shadow"></span>
+              <span className="visually-hidden">Previous</span>
+            </button>
+            <button
+              className="carousel-control-next"
+              type="button"
+              data-bs-target="#categoryCarousel"
+              data-bs-slide="next"
+            >
+              <span className="carousel-control-next-icon bg-dark rounded-circle p-3 shadow"></span>
+              <span className="visually-hidden">Next</span>
+            </button>
           </div>
         </div>
       </section>
+      {user ?(<></>):(<section className="py-5 text-center bg-primary text-white position-relative overflow-hidden">
+  <div className="container py-5">
+    <h2
+      className="fw-bold mb-3 animate__animated animate__fadeInUp"
+      data-aos="fade-up"
+    >
+      Ready to Get Started?
+    </h2>
+    <p
+      className="text-white-50 mb-4 animate__animated animate__fadeInUp"
+      data-aos="fade-up"
+      data-aos-delay="200"
+    >
+      Join SkillLink today and connect with the best local talent around you.
+    </p>
 
-      {/* Top Labours */}
-      <section className="py-5 bg-white text-center">
-        <div className="container">
-          <h2 className="fw-bold mb-4">Meet Our Top Labours</h2>
-          <div className="row g-4">
-            <LabourCard
-              name="Rajesh Kumar"
-              role="Electrician"
-              exp="8 years experience"
-              location="Delhi, India"
-            />
-            <LabourCard
-              name="Priya Singh"
-              role="Plumber"
-              exp="6 years experience"
-              location="Mumbai, India"
-            />
-            <LabourCard
-              name="Amit Verma"
-              role="Carpenter"
-              exp="10 years experience"
-              location="Bangalore, India"
-            />
-          </div>
-        </div>
-      </section>
+    <div data-aos="zoom-in" data-aos-delay="400">
+      <Link to="/register-labour" className="btn btn-warning btn-lg mx-2 shadow-sm">
+        Register as Labour
+      </Link>
+      <Link to="/find" className="btn btn-outline-light btn-lg mx-2">
+        View Labourers
+      </Link>
+    </div>
+  </div>
 
-      {/* Testimonials */}
-      <section className="py-5 bg-light text-center">
-        <div className="container">
-          <h2 className="fw-bold mb-4">What Our Users Say</h2>
-          <div className="row g-4">
-            <TestimonialCard
-              name="Vickram Patel"
-              role="Homeowner"
-              text="SkillLink made it so easy to find a reliable electrician. The booking was instant and the service was excellent. Highly recommended!"
-            />
-            <TestimonialCard
-              name="Suresh Reddy"
-              role="Professional Plumber"
-              text="As a plumber, SkillLink has helped me reach more customers. The platform is user-friendly and the payments are reliable."
-            />
-            <TestimonialCard
-              name="Anjali Gupta"
-              role="Business Owner"
-              text="I've used SkillLink multiple times for various home repairs. The quality of work is consistent and the labours are always professional."
-            />
-          </div>
-        </div>
-      </section>
+  {/* Decorative Floating Icons (optional for consistency) */}
+  <FaBolt className="float-icon text-danger" style={{ top: "15%", left: "10%" }} />
+  <FaTools className="float-icon text-danger" style={{ top: "70%", left: "80%" }} />
+  <FaBrush className="float-icon text-danger" style={{ top: "40%", left: "50%" }} />
+</section>
+)}
 
-      {/* CTA */}
-      <section className="py-5 bg-primary text-center text-white">
-        <div className="container">
-          <h2 className="fw-bold mb-3">Ready to get started?</h2>
-          <button className="btn btn-warning mx-2">Book Now</button>
-          <button className="btn btn-outline-light mx-2">View All Labours</button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-dark text-white text-center py-4">
-        <p className="mb-1">© 2025 SkillLink. All rights reserved.</p>
-        <div>
-          <Link href="#" className="text-white-50 mx-2 text-decoration-none">
-            About Us
-          </Link>
-          <Link href="#" className="text-white-50 mx-2 text-decoration-none">
-            Privacy Policy
-          </Link>
-          <Link href="#" className="text-white-50 mx-2 text-decoration-none">
-            Contact
-          </Link>
-          <Link href="#" className="text-white-50 mx-2 text-decoration-none">
-            Blog
-          </Link>
-        </div>
-      </footer>
+     
     </div>
   );
 }
 
-/* Subcomponents */
-function FeatureCard({ icon, title, text }) {
+function FeatureCard({ icon, title, text, aos }) {
   return (
-    <div className="col-md-4">
-      <div className="card border-0 shadow-sm h-100 p-4">
+    <div className="col-md-4" data-aos={aos}>
+      <div className="card border-0 shadow-sm h-100 p-4 card-animate">
         <div className="display-5 text-primary mb-3">{icon}</div>
         <h5 className="fw-semibold mb-2">{title}</h5>
         <p className="text-muted small">{text}</p>
-      </div>
-    </div>
-  );
-}
-
-function CategoryCard({ icon, title, desc }) {
-  return (
-    <div className="col-md-4">
-      <div className="card border-0 shadow-sm h-100 p-4">
-        <div className="display-6 text-primary mb-2">{icon}</div>
-        <h6 className="fw-semibold">{title}</h6>
-        <p className="small text-muted">{desc}</p>
-      </div>
-    </div>
-  );
-}
-
-function LabourCard({ name, role, exp, location }) {
-  return (
-    <div className="col-md-4">
-      <div className="card border-0 shadow-sm h-100 p-4">
-        <div className="bg-light rounded-circle mx-auto mb-3" style={{ width: 80, height: 80 }}></div>
-        <h6 className="fw-semibold">{name}</h6>
-        <p className="text-primary mb-1 small">{role}</p>
-        <p className="text-muted small mb-0">{exp}</p>
-        <p className="text-muted small">{location}</p>
-      </div>
-    </div>
-  );
-}
-
-function TestimonialCard({ name, role, text }) {
-  return (
-    <div className="col-md-4">
-      <div className="card border-0 shadow-sm h-100 p-4">
-        <p className="text-muted small mb-3">“{text}”</p>
-        <h6 className="fw-semibold mb-0">{name}</h6>
-        <p className="text-primary small">{role}</p>
       </div>
     </div>
   );

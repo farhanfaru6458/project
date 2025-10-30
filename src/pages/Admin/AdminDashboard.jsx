@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AdminDashboard() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const username = location.state?.username || "Admin";
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  const toggleDropdown = (name) => {
+    setOpenDropdown(openDropdown === name ? null : name);
+  };
+
+  const username = "Admin";
 
   const cards = [
     { title: "Total Labours", count: 58, color: "#007bff", icon: "🧑‍🔧" },
@@ -15,6 +18,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="container py-5">
+      {/* Header */}
       <h2 className="fw-bold text-center text-primary mb-1">
         Admin Dashboard
       </h2>
@@ -47,39 +51,63 @@ export default function AdminDashboard() {
       <div className="card shadow border-0 p-4">
         <h5 className="fw-bold text-secondary mb-3">Quick Actions</h5>
         <div className="row g-3">
-          <div className="col-12 col-md-4">
+
+          {/* Manage Categories */}
+          <div className="col-12 col-md-4 position-relative">
             <button
               className="btn w-100 text-white fw-semibold py-2"
               style={{ backgroundColor: "#f8b400" }}
-              onClick={() => navigate("/manage-categories")}
+              onClick={() => toggleDropdown("categories")}
             >
               📋 Manage Categories
             </button>
+
+            {openDropdown === "categories" && (
+              <div className="dropdown-menu show mt-2 w-100 shadow-sm">
+                <button className="dropdown-item">Add Category</button>
+                <button className="dropdown-item">Edit Category</button>
+                <button className="dropdown-item">Delete Category</button>
+              </div>
+            )}
           </div>
 
-          <div className="col-12 col-md-4">
+          {/* View Labours */}
+          <div className="col-12 col-md-4 position-relative">
             <button
               className="btn w-100 btn-primary fw-semibold py-2"
-              onClick={() => navigate("/labour-list")}
+              onClick={() => toggleDropdown("labours")}
             >
               🧑‍🔧 View Labours
             </button>
+
+            {openDropdown === "labours" && (
+              <div className="dropdown-menu show mt-2 w-100 shadow-sm">
+                <button className="dropdown-item">Add Labour</button>
+                <button className="dropdown-item">Edit Labour</button>
+                <button className="dropdown-item">Delete Labour</button>
+              </div>
+            )}
           </div>
 
-          <div className="col-12 col-md-4">
+          {/* View Managers */}
+          <div className="col-12 col-md-4 position-relative">
             <button
               className="btn w-100 btn-success fw-semibold py-2"
-              onClick={() => navigate("/manager-list")}
+              onClick={() => toggleDropdown("managers")}
             >
               👷‍♂️ View Managers
             </button>
+
+            {openDropdown === "managers" && (
+              <div className="dropdown-menu show mt-2 w-100 shadow-sm">
+                <button className="dropdown-item">Add Manager</button>
+                <button className="dropdown-item">Edit Manager</button>
+                <button className="dropdown-item">Delete Manager</button>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      <footer className="text-center mt-5 text-muted small">
-        © {new Date().getFullYear()} SkillLink Admin Panel
-      </footer>
     </div>
   );
 }

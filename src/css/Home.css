@@ -1,0 +1,112 @@
+/* 🌌 Animated gradient background */
+.hero-section {
+  background: linear-gradient(-45deg, #007bff, #6610f2, #17a2b8, #6f42c1);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease infinite;
+  position: relative;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ✨ Floating icons */
+.floating-icons .float-icon {
+  position: absolute;
+  opacity: 0.15;
+  font-size: 4rem;
+  animation: float 8s ease-in-out infinite;
+}
+
+.floating-icons .float-icon:nth-child(1) {
+  top: 10%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.floating-icons .float-icon:nth-child(2) {
+  top: 25%;
+  right: 20%;
+  animation-delay: 2s;
+}
+
+.floating-icons .float-icon:nth-child(3) {
+  bottom: 20%;
+  left: 20%;
+  animation-delay: 4s;
+}
+
+.floating-icons .float-icon:nth-child(4) {
+  bottom: 15%;
+  right: 15%;
+  animation-delay: 6s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* 💫 Card hover animation */
+.card-animate {
+  transition: all 0.4s ease;
+}
+
+.card-animate:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+.category-card {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border-radius: 20px;
+  background: #fff;
+}
+.category-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.765);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-size: 50%, 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: invert(1);
+}
+
+.carousel-inner {
+  padding-bottom: 30px;
+}
+
+/* Animation for smoother transitions */
+.carousel-item {
+  transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+}
+.float-icon {
+  position: absolute;
+  font-size: 2.5rem;
+  opacity: 0.15;
+  animation: floaty 6s ease-in-out infinite;
+}
+
+@keyframes floaty {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
