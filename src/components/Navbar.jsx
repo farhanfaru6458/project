@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import Logo from "./Logo";
 import "../css/Navbar.css";
@@ -9,8 +9,15 @@ export default function Navbar() {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
-
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setIsNavbarOpen(false); // ✅ Close mobile navbar when page changes
+  }, [location.pathname]);
 
   // ✅ Listen for login/logout updates
   useEffect(() => {
@@ -18,7 +25,6 @@ export default function Navbar() {
       const updatedUser = localStorage.getItem("user");
       setUser(updatedUser ? JSON.parse(updatedUser) : null);
     };
-
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
@@ -37,12 +43,19 @@ export default function Navbar() {
 
   const userRole = user?.role?.toLowerCase();
 
+  // ✅ Toggle collapse in mobile
+  const toggleNavbar = () => setIsNavbarOpen(!isNavbarOpen);
+
+  // ✅ Close navbar after clicking a link (on mobile)
+  const handleNavLinkClick = () => setIsNavbarOpen(false);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 sticky-top animate__animated animate__fadeInDown">
       {/* Logo + Brand */}
       <NavLink
         className="navbar-brand fw-bold text-primary d-flex align-items-center"
         to="/"
+        onClick={handleNavLinkClick}
       >
         <Logo size={50} />
         <span className="ms-2" style={{ color: "darkblue" }}>
@@ -55,53 +68,51 @@ export default function Navbar() {
       <button
         className="navbar-toggler"
         type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
+        onClick={toggleNavbar}
       >
         <span className="navbar-toggler-icon"></span>
       </button>
 
       {/* Center nav links */}
-      <div className="collapse navbar-collapse" id="navbarNav">
+      <div className={`collapse navbar-collapse ${isNavbarOpen ? "show" : ""}`} id="navbarNav">
         <ul className="navbar-nav mx-auto">
-
           {/* ✅ Conditional Home/Dashboard */}
           <li className="nav-item mx-2">
             {user ? (
               userRole === "admin" ? (
-                <NavLink className="nav-link" to="/admin-dashboard">
+                <NavLink className="nav-link" to="/admin-dashboard" onClick={handleNavLinkClick}>
                   Admin Dashboard
                 </NavLink>
               ) : userRole === "manager" ? (
-                <NavLink className="nav-link" to="/manager-dashboard">
+                <NavLink className="nav-link" to="/manager-dashboard" onClick={handleNavLinkClick}>
                   Manager Dashboard
                 </NavLink>
               ) : (
-                <NavLink className="nav-link" to="/" end>
+                <NavLink className="nav-link" to="/" end onClick={handleNavLinkClick}>
                   Home
                 </NavLink>
               )
             ) : (
-              <NavLink className="nav-link" to="/" end>
+              <NavLink className="nav-link" to="/" end onClick={handleNavLinkClick}>
                 Home
               </NavLink>
             )}
           </li>
 
           <li className="nav-item mx-2">
-            <NavLink className="nav-link" to="/labours">
-               Labours
+            <NavLink className="nav-link" to="/labours" onClick={handleNavLinkClick}>
+              Labours
             </NavLink>
           </li>
 
           <li className="nav-item mx-2">
-            <NavLink className="nav-link" to="/about">
+            <NavLink className="nav-link" to="/about" onClick={handleNavLinkClick}>
               About Us
             </NavLink>
           </li>
 
           <li className="nav-item mx-2">
-            <NavLink className="nav-link" to="/contact">
+            <NavLink className="nav-link" to="/contact" onClick={handleNavLinkClick}>
               Contact Us
             </NavLink>
           </li>
@@ -110,7 +121,7 @@ export default function Navbar() {
         {/* Right side: user info or login */}
         {user ? (
           <div
-            className="d-flex align-items-center bg-light border rounded-pill px-3 py-1 shadow-sm"
+            className="d-flex align-items-center bg-light border rounded-pill px-3 py-1 shadow-sm mt-2 mt-lg-0"
             style={{ cursor: "default", minWidth: "fit-content" }}
           >
             {/* User Icon */}
@@ -138,7 +149,7 @@ export default function Navbar() {
             </button>
           </div>
         ) : (
-          <Link to="/login" className="btn btn-primary px-4">
+          <Link to="/login" className="btn btn-primary px-4" onClick={handleNavLinkClick}>
             Sign In
           </Link>
         )}

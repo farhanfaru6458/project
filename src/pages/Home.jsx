@@ -118,18 +118,30 @@ const navigate = useNavigate();
     >
       Find skilled labours and book them instantly in your area
     </p>
-  <div data-aos="zoom-in" data-aos-delay="400">
-       {user ? (
-      <Link to="/labours" className="btn btn-warning btn-lg mx-2">
-        Find Labour
-      </Link>):(<>
-         <Link to="/labours" className="btn btn-warning btn-lg mx-2">
+ <div
+  className="d-flex flex-wrap justify-content-center gap-3 mt-3"
+  data-aos="zoom-in"
+  data-aos-delay="400"
+>
+  {user ? (
+    <Link to="/labours" className="btn btn-warning btn-lg px-4 py-2 shadow-sm">
+      Find Labour
+    </Link>
+  ) : (
+    <>
+      <Link to="/labours" className="btn btn-warning btn-lg px-4 py-2 shadow-sm">
         Find Labour
       </Link>
-        <Link to="/register-labour" className="btn btn-outline-light btn-lg mx-2">
+      <Link
+        to="/register-labour"
+        className="btn btn-outline-light btn-lg px-4 py-2 shadow-sm"
+      >
         Register as Labour
-      </Link> </>)}
-    </div>
+      </Link>
+    </>
+  )}
+</div>
+
    
       
     
@@ -227,38 +239,7 @@ const navigate = useNavigate();
           </div>
         </div>
       </section>
-      {user ?(<></>):(<section className="py-5 text-center bg-primary text-white position-relative overflow-hidden">
-  <div className="container py-5">
-    <h2
-      className="fw-bold mb-3 animate__animated animate__fadeInUp"
-      data-aos="fade-up"
-    >
-      Ready to Get Started?
-    </h2>
-    <p
-      className="text-white-50 mb-4 animate__animated animate__fadeInUp"
-      data-aos="fade-up"
-      data-aos-delay="200"
-    >
-      Join SkillLink today and connect with the best local talent around you.
-    </p>
-
-    <div data-aos="zoom-in" data-aos-delay="400">
-      <Link to="/register-labour" className="btn btn-warning btn-lg mx-2 shadow-sm">
-        Register as Labour
-      </Link>
-      <Link to="/find" className="btn btn-outline-light btn-lg mx-2">
-        View Labourers
-      </Link>
-    </div>
-  </div>
-
-  {/* Decorative Floating Icons (optional for consistency) */}
-  <FaBolt className="float-icon text-danger" style={{ top: "15%", left: "10%" }} />
-  <FaTools className="float-icon text-danger" style={{ top: "70%", left: "80%" }} />
-  <FaBrush className="float-icon text-danger" style={{ top: "40%", left: "50%" }} />
-</section>
-)}
+     
 
      
     </div>

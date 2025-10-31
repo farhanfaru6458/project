@@ -5,8 +5,8 @@ import {
   Card,
   Row,
   Col,
-  ProgressBar,
   FloatingLabel,
+  ProgressBar,
 } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "leaflet/dist/leaflet.css";
 
-// 🗺️ Fix default marker issue
+// 🧭 Fix default leaflet marker
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -47,7 +47,7 @@ const RoleBasedRegister = () => {
 
   const [previewImages, setPreviewImages] = useState([]);
 
-  // 🧹 Clean preview URLs
+  // Clean up image URLs
   useEffect(() => {
     return () => previewImages.forEach((url) => URL.revokeObjectURL(url));
   }, [previewImages]);
@@ -65,15 +65,13 @@ const RoleBasedRegister = () => {
     }
   };
 
-  // Step Navigation
   const handleNext = () => {
     if (!formData.role) {
       alert("⚠️ Please select a role first!");
       return;
     }
-
     if (formData.role === "Manager") {
-      if (step === 1) setStep(3); // Skip Step 2
+      if (step === 1) setStep(3);
     } else if (formData.role === "Labour") {
       if (step < 3) setStep(step + 1);
     }
@@ -84,11 +82,18 @@ const RoleBasedRegister = () => {
     else if (step > 1) setStep(step - 1);
   };
 
-  // Submit Handler
+  // ✅ UPDATED handleSubmit (auto merges predefined + saves new user)
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const existingUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+    const existingUsers =
+      JSON.parse(localStorage.getItem("registeredUsers")) || [];
+
+    const predefinedUsers = [
+      { role: "admin", username: "farhan", password: "farhan123" },
+      { role: "manager", username: "nabeel", password: "nabeel123" },
+      { role: "labour", username: "shaima", password: "shaima123" },
+    ];
 
     const newUser = {
       ...formData,
@@ -97,13 +102,22 @@ const RoleBasedRegister = () => {
       password: "12345",
     };
 
+    const allUsers = [...predefinedUsers, ...existingUsers];
+    const userExists = allUsers.some(
+      (u) => u.username === newUser.username && u.role === newUser.role
+    );
+
+    if (userExists) {
+      alert("⚠️ User already exists. Try a different email or username.");
+      return;
+    }
+
     const updatedUsers = [...existingUsers, newUser];
     localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
     localStorage.setItem("user", JSON.stringify(newUser));
     window.dispatchEvent(new Event("storage"));
 
     alert(`${formData.role} Registered Successfully!`);
-
     if (formData.role === "Labour") navigate("/");
     else navigate("/manager-dashboard");
   };
@@ -118,18 +132,19 @@ const RoleBasedRegister = () => {
 
   return (
     <div
-      className="d-flex align-items-center justify-content-center mt-5"
-      style={{ minHeight: "100vh" }}
+      className="d-flex align-items-center justify-content-center py-4 px-2"
+      style={{ minHeight: "100vh", backgroundColor: "#f5f7fa" }}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
+        className="w-100"
+        style={{ maxWidth: "650px" }}
       >
         <Card
-          className="p-4 shadow-lg border-0"
+          className="p-4 shadow-lg border-0 mx-auto"
           style={{
-            width: "650px",
             borderRadius: "18px",
             background: "rgba(255, 255, 255, 0.95)",
             backdropFilter: "blur(10px)",
@@ -164,6 +179,7 @@ const RoleBasedRegister = () => {
 
           <Form onSubmit={handleSubmit}>
             <AnimatePresence mode="wait">
+              {/* Step 1 */}
               {step === 1 && (
                 <motion.div
                   key="step1"
@@ -202,21 +218,19 @@ const RoleBasedRegister = () => {
                     onChange={handleChange}
                   />
 
-                  {/* 🗺️ Map Picker */}
                   <Form.Group className="mb-3">
                     <Form.Label>Select Your Location *</Form.Label>
                     <div
                       style={{
                         borderRadius: "14px",
                         overflow: "hidden",
-                        boxShadow: "0 0 10px rgba(0,0,0,0.15)",
                         border: "2px solid #e3e3e3",
                       }}
                     >
                       <MapContainer
                         center={[9.9312, 76.2673]}
                         zoom={10}
-                        style={{ height: "300px", width: "100%" }}
+                        style={{ height: "250px", width: "100%" }}
                       >
                         <TileLayer
                           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -229,25 +243,16 @@ const RoleBasedRegister = () => {
                       </MapContainer>
                     </div>
 
-                    {/* 🧭 Show selected location */}
                     {formData.location && (
-                      <div
-                        className="mt-3 p-3 bg-light rounded border"
-                        style={{
-                          fontSize: "0.95rem",
-                          boxShadow: "inset 0 0 6px rgba(0,0,0,0.1)",
-                        }}
-                      >
-                        📍 <strong>Selected Location:</strong>
-                        <div className="text-muted small mt-1">
-                          {formData.location}
-                        </div>
+                      <div className="mt-3 p-3 bg-light rounded border small">
+                        📍 <strong>Selected:</strong> {formData.location}
                       </div>
                     )}
                   </Form.Group>
                 </motion.div>
               )}
 
+              {/* Step 2 */}
               {step === 2 && formData.role === "Labour" && (
                 <motion.div
                   key="step2"
@@ -274,17 +279,6 @@ const RoleBasedRegister = () => {
                       "Gardener",
                       "Event Manager",
                       "Caterer",
-                      "DJ & Sound Technician",
-                      "Decorator",
-                      "Photographer",
-                      "Makeup Artist",
-                      "Light & Stage Technician",
-                      "Event Host (MC)",
-                      "Videographer",
-                      "Cake Designer",
-                      "Sound Engineer",
-                      "Event Coordinator",
-                      "Water Supplier",
                     ]}
                   />
                   <FloatingField
@@ -294,6 +288,7 @@ const RoleBasedRegister = () => {
                     value={formData.experience}
                     onChange={handleChange}
                   />
+
                   <Form.Group className="mb-3">
                     <Form.Label>Upload Work Images</Form.Label>
                     <Form.Control
@@ -306,33 +301,29 @@ const RoleBasedRegister = () => {
                   </Form.Group>
 
                   {previewImages.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <h6 className="text-muted mb-2">Work Samples:</h6>
-                      <Row>
-                        {previewImages.map((src, index) => (
-                          <Col xs={4} md={3} key={index} className="mb-3">
-                            <motion.img
-                              src={src}
-                              alt={`preview-${index}`}
-                              className="rounded shadow-sm"
-                              style={{
-                                width: "100%",
-                                height: "90px",
-                                objectFit: "cover",
-                              }}
-                              whileHover={{ scale: 1.05 }}
-                            />
-                          </Col>
-                        ))}
-                      </Row>
-                    </motion.div>
+                    <Row xs={3} sm={4} md={5} className="g-2">
+                      {previewImages.map((src, i) => (
+                        <Col key={i}>
+                          <motion.img
+                            src={src}
+                            alt=""
+                            className="rounded shadow-sm"
+                            style={{
+                              width: "100%",
+                              height: "80px",
+                              objectFit: "cover",
+                            }}
+                            whileHover={{ scale: 1.05 }}
+                          />
+                        </Col>
+                      ))}
+                    </Row>
                   )}
                 </motion.div>
               )}
+
+              {/* Step 3 */}
+              {console.log("Current step:", step, "Role:", formData.role)}
 
               {step === 3 && (
                 <motion.div
@@ -362,25 +353,34 @@ const RoleBasedRegister = () => {
               )}
             </AnimatePresence>
 
-            {/* Navigation Buttons */}
-            <div className="d-flex justify-content-between mt-4">
+            {/* Buttons */}
+            <div className="d-flex flex-column flex-sm-row justify-content-between mt-4 gap-2">
               {step > 1 && (
                 <motion.div whileHover={{ scale: 1.05 }}>
-                  <Button type="button" variant="secondary" onClick={handleBack}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={handleBack}
+                    className="w-100"
+                  >
                     ← Back
                   </Button>
                 </motion.div>
               )}
-
               {step < 3 ? (
                 <motion.div whileHover={{ scale: 1.05 }}>
-                  <Button type="button" variant="info" onClick={handleNext}>
+                  <Button
+                    type="button"
+                    variant="info"
+                    onClick={handleNext}
+                    className="w-100"
+                  >
                     Next →
                   </Button>
                 </motion.div>
               ) : (
                 <motion.div whileHover={{ scale: 1.05 }}>
-                  <Button type="submit" variant="success">
+                  <Button type="submit" variant="success" className="w-100">
                     Submit
                   </Button>
                 </motion.div>
@@ -393,7 +393,7 @@ const RoleBasedRegister = () => {
   );
 };
 
-// 🧭 Map Marker Component
+// 🗺️ Map marker component
 const LocationMarker = ({ formData, setFormData }) => {
   const [position, setPosition] = useState(null);
   useMapEvents({
@@ -411,11 +411,10 @@ const LocationMarker = ({ formData, setFormData }) => {
       }
     },
   });
-
   return position ? <Marker position={position}></Marker> : null;
 };
 
-// 💬 Floating Field Component
+// ✨ Floating Label Input
 const FloatingField = ({ label, type, name, value, onChange, options = [] }) => (
   <Form.Group className="mb-3">
     {type === "select" ? (

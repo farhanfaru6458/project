@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   FaTachometerAlt,
@@ -6,125 +6,145 @@ import {
   FaClipboardList,
   FaUserCircle,
   FaEye,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import {  NavLink, useNavigate } from "react-router-dom";
+import "./ManagerDashboard.css"; // <-- new CSS file
 
 export default function ManagerDashboard() {
   const [activeSection, setActiveSection] = useState("dashboard");
+  const [compact, setCompact] = useState(false); // not required to toggle, used by CSS breakpoints
+  const [managerName, setManagerName] = useState("Manager");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Get logged-in user name if present
+    try {
+      const u = JSON.parse(localStorage.getItem("user"));
+      if (u && u.username) {
+        setManagerName(u.fullName || u.username || "Manager");
+      }
+    } catch (e) {}
+    // respond to window resize to optionally set compact flag if needed for JS logic (optional)
+    const onResize = () => setCompact(window.innerWidth < 768);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    // optionally keep registeredUsers etc
+    navigate("/login");
+  };
 
   return (
-    <div className="d-flex bg-light min-vh-100">
-      {/* Sidebar */}
-      <aside
-        className="bg-primary text-white d-flex flex-column p-3"
-        style={{ width: "250px" }}
-      >
-        <h3 className="fw-bold mb-4">SkillLink</h3>
-        <ul className="nav flex-column">
-          <SidebarItem
-            text="Dashboard"
-            icon={<FaTachometerAlt />}
-            active={activeSection === "dashboard"}
-            onClick={() => setActiveSection("dashboard")}
-          />
-
-          {/* ✅ This now navigates to /labours */}
-          <SidebarItemLink
-            text="All Labours"
-            icon={<FaUsers />}
-            to="/labours"
-            active={window.location.pathname === "/labours"}
-          />
-
-          <SidebarItem
-            text="Bookings"
-            icon={<FaClipboardList />}
-            active={activeSection === "bookings"}
-            onClick={() => setActiveSection("bookings")}
-          />
-          <SidebarItem
-            text="Profile"
-            icon={<FaUserCircle />}
-            active={activeSection === "profile"}
-            onClick={() => setActiveSection("profile")}
-          />
-        </ul>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-grow-1 p-4">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <div>
-            <h4 className="fw-bold text-primary mb-1">Welcome back, Manager!</h4>
-            <p className="text-muted mb-0">{new Date().toDateString()}</p>
-          </div>
+    <div className="manager-shell">
+      <aside className={`manager-sidebar ${compact ? "compact" : ""}`}>
+        <div className="brand">
+          <div className="brand-icon">SL</div>
+          <div className="brand-text">SkillLink</div>
         </div>
 
-        {/* Conditional Rendering */}
-        {activeSection === "dashboard" && <BookingsTable />}
-        {activeSection === "bookings" && <BookingsTable />}
-        {activeSection === "profile" && (
-          <motion.div
-            className="bg-white p-4 rounded-4 shadow-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <h5 className="fw-bold mb-3">Profile</h5>
-            <p className="text-muted">Manage your account information here.</p>
-            <div className="mt-3">
-              <p>
-                <strong>Name:</strong>  Manager Nabeel
-              </p>
-              <p>
-                <strong>Email:</strong> nabeel@gmail.com
-              </p>
-              <p>
-                <strong>Phone:</strong> +91 98765 43210
-              </p>
+        <nav className="nav-list">
+          <SidebarButton
+            icon={<FaTachometerAlt />}
+            text="Dashboard"
+            active={activeSection === "dashboard"}
+            onClick={() => setActiveSection("dashboard")}
+            compact={compact}
+          />
+          <SidebarLink
+            to="/labours"
+            icon={<FaUsers />}
+            text="All Labours"
+            compact={compact}
+          />
+          <SidebarButton
+            icon={<FaClipboardList />}
+            text="Bookings"
+            active={activeSection === "bookings"}
+            onClick={() => setActiveSection("bookings")}
+            compact={compact}
+          />
+          <SidebarButton
+            icon={<FaUserCircle />}
+            text="Profile"
+            active={activeSection === "profile"}
+            onClick={() => setActiveSection("profile")}
+            compact={compact}
+          />
+        </nav>
+
+        <div className="sidebar-footer">
+          <div className="manager-info">
+            <div className="avatar">{managerName.split(" ").map(n => n[0]).slice(0,2).join("")}</div>
+            <div className="manager-meta">
+              <div className="name">{managerName}</div>
+              <div className="role small text-muted">Manager</div>
             </div>
-          </motion.div>
-        )}
+          </div>
+
+          <button
+            className="btn btn-logout"
+            onClick={handleLogout}
+            title="Logout"
+            aria-label="Logout"
+          >
+            <FaSignOutAlt />
+            <span className="btn-text">Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <main className="manager-main">
+        <header className="manager-header">
+          <div>
+            <h4 className="fw-bold text-primary mb-1">Welcome back, {managerName}!</h4>
+            <p className="text-muted mb-0">{new Date().toDateString()}</p>
+          </div>
+        </header>
+
+        <section className="content">
+          {activeSection === "dashboard" && <BookingsTable />}
+          {activeSection === "bookings" && <BookingsTable />}
+          {activeSection === "profile" && <ManagerProfile name={managerName} />}
+        </section>
       </main>
     </div>
   );
 }
 
-/* Sidebar Item Component (button type) */
-function SidebarItem({ text, icon, active, onClick }) {
+/* Sidebar clickable button (JS controlled) */
+function SidebarButton({ icon, text, active, onClick, compact }) {
   return (
-    <li className="nav-item mb-2">
-      <button
-        className={`nav-link text-white d-flex align-items-center gap-2 px-3 py-2 rounded border-0 bg-transparent w-100 text-start ${
-          active ? "bg-white bg-opacity-25 fw-bold" : "opacity-75"
-        }`}
-        onClick={onClick}
-      >
-        {icon}
-        <span>{text}</span>
-      </button>
-    </li>
+    <button
+      onClick={onClick}
+      className={`sidebar-item ${active ? "active" : ""}`}
+      title={compact ? text : ""}
+    >
+      <span className="icon">{icon}</span>
+      <span className="label">{text}</span>
+    </button>
   );
 }
 
-/* ✅ Sidebar Link Item (for navigation routes) */
-function SidebarItemLink({ text, icon, to, active }) {
+/* Sidebar nav link */
+function SidebarLink({ to, icon, text, compact }) {
   return (
-    <li className="nav-item mb-2">
-      <Link
-        to={to}
-        className={`nav-link text-white d-flex align-items-center gap-2 px-3 py-2 rounded w-100 text-start ${
-          active ? "bg-white bg-opacity-25 fw-bold" : "opacity-75"
-        }`}
-      >
-        {icon}
-        <span>{text}</span>
-      </Link>
-    </li>
+    <NavLink
+      to={to}
+      className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}
+      title={compact ? text : ""}
+    >
+      <span className="icon">{icon}</span>
+      <span className="label">{text}</span>
+    </NavLink>
   );
 }
 
-/* Bookings Table */
+/* Bookings table with animations */
 function BookingsTable() {
   const bookings = [
     ["Ahmed Hassan", "Plumbing", "Jan 15, 2024", "Confirmed"],
@@ -137,9 +157,10 @@ function BookingsTable() {
 
   return (
     <motion.div
-      className="bg-white rounded-4 shadow-sm p-4"
-      initial={{ opacity: 0, y: 20 }}
+      className="panel"
+      initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45 }}
     >
       <h5 className="fw-bold mb-3">Recent Bookings</h5>
       <div className="table-responsive">
@@ -157,9 +178,9 @@ function BookingsTable() {
             {bookings.map(([name, skill, date, status], i) => (
               <motion.tr
                 key={i}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.06 }}
               >
                 <td className="fw-semibold text-primary">{name}</td>
                 <td>
@@ -167,25 +188,31 @@ function BookingsTable() {
                 </td>
                 <td>{date}</td>
                 <td>
-                  <span
-                    className={`badge ${
-                      status === "Confirmed"
-                        ? "bg-success-subtle text-success"
-                        : status === "Pending"
-                        ? "bg-warning-subtle text-warning"
-                        : "bg-info-subtle text-info"
-                    }`}
-                  >
-                    {status}
-                  </span>
+                  <span className={`badge ${
+                    status === "Confirmed" ? "bg-success-subtle text-success" :
+                    status === "Pending" ? "bg-warning-subtle text-warning" : "bg-info-subtle text-info"
+                  }`}>{status}</span>
                 </td>
-                <td>
-                  <FaEye className="text-secondary" />
-                </td>
+                <td><FaEye className="text-secondary" /></td>
               </motion.tr>
             ))}
           </tbody>
         </table>
+      </div>
+    </motion.div>
+  );
+}
+
+/* Manager profile */
+function ManagerProfile({ name }) {
+  return (
+    <motion.div className="panel" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <h5 className="fw-bold mb-3">Profile</h5>
+      <p className="text-muted">Manage your account information here.</p>
+      <div className="mt-3">
+        <p><strong>Name:</strong> {name}</p>
+        <p><strong>Email:</strong> manager@example.com</p>
+        <p><strong>Phone:</strong> +91 98765 43210</p>
       </div>
     </motion.div>
   );

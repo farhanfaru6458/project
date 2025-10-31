@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn,FaBolt,FaTools,FaBrush } from "react-icons/fa";
 
 const Footer = () => {
-  return (
+
+const [user, setUser] = useState(null);
+   useEffect(() => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser) {
+        setUser(storedUser);
+      }
+    }, []);
+
+  return (<>
+
+
     <footer
       className="text-white mt-5"
       style={{
@@ -12,6 +24,43 @@ const Footer = () => {
         position: "relative",
       }}
     >
+            {user ?(<></>):(<section className="py-5 text-center  text-white position-relative overflow-hidden" >
+  <div className="container py-5"  >
+    <h2
+      className="fw-bold mb-3 animate__animated animate__fadeInUp"
+      data-aos="fade-up"
+    >
+      Ready to Get Started?
+    </h2>
+    <p
+      className="text-white-50 mb-4 animate__animated animate__fadeInUp"
+      data-aos="fade-up"
+      data-aos-delay="200"
+    >
+      Join SkillLink today and connect with the best local talent around you.
+    </p>
+
+    <div className="d-flex flex-wrap justify-content-center gap-3 mt-3" data-aos="zoom-in" data-aos-delay="400">
+    <>
+      <Link to="/labours" className="btn btn-warning btn-lg px-4 py-2 shadow-sm">
+        Find Labour
+      </Link>
+      <Link
+        to="/register-labour"
+        className="btn btn-outline-light btn-lg px-4 py-2 shadow-sm"
+      >
+        Register as Labour
+      </Link>
+    </>
+    </div>
+  </div>
+
+  {/* Decorative Floating Icons (optional for consistency) */}
+  <FaBolt className="float-icon text-danger" style={{ top: "15%", left: "10%" }} />
+  <FaTools className="float-icon text-danger" style={{ top: "70%", left: "80%" }} />
+  <FaBrush className="float-icon text-danger" style={{ top: "40%", left: "50%" }} />
+</section>
+)}
       {/* Floating circles for subtle animation */}
       <motion.div
         className="position-absolute rounded-circle"
@@ -119,6 +168,7 @@ const Footer = () => {
         </motion.div>
       </div>
     </footer>
+    </>
   );
 };
 
